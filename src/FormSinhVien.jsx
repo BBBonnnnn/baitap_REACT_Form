@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-
-export default class FormSinhVien extends Component {
+import { Connect, connect } from 'react-redux';
+ class FormSinhVien extends Component {
 
     state = {
         value: {
@@ -97,9 +97,14 @@ export default class FormSinhVien extends Component {
                 <form onSubmit={(e) => {
                     e.preventDefault();
                     themSV(this.state.value);
-                    console.log('xxxx',e)
-                    // e.target.input.value = ''
-                    
+                    this.setState({
+                        value: {
+                            maSV: '',
+                            soDienThoai: '',
+                            hoTen: '',
+                            email: '',
+                        }
+                    })
                 }}>
                     <h1 className='text-center bg-dark text-light'>Thông tin sinh viên</h1>
                     <div className='row'>
@@ -128,15 +133,36 @@ export default class FormSinhVien extends Component {
                         </div>
                     </div>
 
-                    <button className='btn btn-success my-4' type='submit' disabled={this.state.inValid}>Thêm sinh viên</button>
-                    <button className='btn btn-primary my-4 mx-3' onClick={() => {
+                    <button className='btn btn-success my-2' type='submit' disabled={this.state.inValid} id='btnThem'>Thêm sinh viên</button>
+                    <button className='btn btn-primary mx-3'  id='btnChinhSua' onClick={(e) => {
                     this.props.updateSV(this.state.value);
+                    this.setState({
+                        value: {
+                            maSV: '',
+                            soDienThoai: '',
+                            hoTen: '',
+                            email: '',
+                        }
+                    })
+                    this.props.renderTable()
+                    document.getElementById('btnThem').disabled = false;
+                    document.getElementById('maSV').disabled = false;
                 }}>Chỉnh sửa</button>
                 </form>
                 
+
             </div>
         )
     }
 }
 
+const mapStateToProps = state =>{
+    return {
+        number:state.numberReducer
+    }
+}
+
+const ComponentWithRedux = connect(mapStateToProps)(FormSinhVien);
+
+export default ComponentWithRedux
 

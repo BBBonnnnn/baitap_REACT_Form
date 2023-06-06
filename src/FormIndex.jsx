@@ -1,7 +1,7 @@
 import React, { Component, createRef } from 'react'
 import FormSinhVien from './FormSinhVien'
-
-export default class FormIndex extends Component {
+import { Connect, connect } from 'react-redux';
+ class FormIndex extends Component {
 
     constructor(props){
         super(props);
@@ -46,17 +46,24 @@ export default class FormIndex extends Component {
         }
     updateSV=(svEdit)=>{
              svEdit = {...svEdit};
+             console.log('aaa',svEdit)
            let svInArray = this.state.arrSinhVien.find(sv=>sv.maSV===svEdit.maSV);
+           console.log('bbb',svInArray)
            if(svInArray){
             for(let key in svInArray ){
                 svInArray[key]=svEdit[key];
             }
             this.setState({
                 arrSinhVien:this.state.arrSinhVien
+            },()=>{
+                console.log('cccc',this.state.arrSinhVien)
             })
            }
     }   
-    
+    offbuttom=()=>{
+        document.getElementById('btnThem').disabled = true;
+        document.getElementById('maSV').disabled = true;
+    }
 
     renderTable = () => {
         return this.state.arrSinhVien.map((item) => {
@@ -73,9 +80,10 @@ export default class FormIndex extends Component {
                     </button>
                     <button className='btn btn-primary'  onClick={(e)=>{
                         this.editSV(item);
-                       
+                        this.offbuttom();
                     }}>
-                    <i className="fa fa-wrench"></i>
+                    <i className="fa fa-wrench">
+                    </i>
                     </button>
                 </td>
             </tr>
@@ -88,7 +96,7 @@ export default class FormIndex extends Component {
     render() {
         return (
             <div className='container'>
-                <FormSinhVien ref={this.childRef} themSV={this.themSV} arrSinhVien={this.state.arrSinhVien} svEdit={this.state.svEdit} updateSV={this.updateSV} />
+                <FormSinhVien ref={this.childRef} themSV={this.themSV} arrSinhVien={this.state.arrSinhVien} svEdit={this.state.svEdit} updateSV={this.updateSV} renderTable={this.renderTable}/>
                 <table className='container w-75 table'>
                     <thead>
                         <tr className='bg-success'>
@@ -109,3 +117,13 @@ export default class FormIndex extends Component {
 
     }
 }
+
+const mapStateToProps = state =>{
+    return {
+        number:state.numberReducer
+    }
+}
+
+const ComponentWithRedux = connect(mapStateToProps)(FormIndex);
+
+export default ComponentWithRedux
